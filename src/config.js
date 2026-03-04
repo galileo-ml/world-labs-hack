@@ -39,7 +39,7 @@ export const WORLDS = {
     id: 'rhinoceros',
     name: 'Rhinoceros',
     splatUrl: '/assets/splats/rhinoceros.spz',
-    available: false, // no .spz file
+    available: true,
   },
   'starry-night': {
     id: 'starry-night',
@@ -94,7 +94,7 @@ export const PORTALS = [
     title: 'Rhinoceros',
     artist: 'Salvador Dali, 1956',
     color: 0xc4a882,
-    position: [-3, -1, 0],
+    position: [1.38, 0.72, -2.77],
     scale: [1.8, 1.2],
     rotation: [0, 0, 0],
     spawn: [0, 1.6, 0],
@@ -107,8 +107,8 @@ export const PORTALS = [
     position: [1.96, 0.9, -0.94],
     scale: [1.8, 1.2],
     rotation: [0, 0, 0],
-    spawn: [0, 1.6, 0],
-    spawnYaw: 54,
+    spawn: [0, 1.6, 0.0],
+    spawnYaw: 9.8,
   },
   {
     worldId: 'cafe-terrace',
