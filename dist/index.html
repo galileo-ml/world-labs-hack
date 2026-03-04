@@ -22,58 +22,18 @@
         height: 100vh;
       }
 
-      #fade-overlay {
+      /* Small pointer-lock hint — only visible when mouse is not captured */
+      #start-overlay {
         position: fixed;
-        inset: 0;
-        background: #000;
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity 0.6s ease;
-        z-index: 10;
-      }
-
-      #fade-overlay.fading {
-        opacity: 1;
-        pointer-events: all;
-      }
-
-      #loading-indicator {
-        position: fixed;
-        inset: 0;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        color: #fff;
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity 0.3s ease;
-        z-index: 11;
-      }
-
-      #loading-indicator.visible {
-        opacity: 1;
-      }
-
-      .loading-spinner {
-        width: 48px;
-        height: 48px;
-        border: 3px solid rgba(255, 255, 255, 0.2);
-        border-top-color: #fff;
-        border-radius: 50%;
-        animation: spin 0.8s linear infinite;
-        margin-bottom: 16px;
-      }
-
-      @keyframes spin {
-        to { transform: rotate(360deg); }
-      }
-
-      #loading-text {
-        font-size: 14px;
+        bottom: 16px;
+        left: 50%;
+        transform: translateX(-50%);
+        color: rgba(255, 255, 255, 0.45);
+        font-size: 12px;
         letter-spacing: 2px;
         text-transform: uppercase;
-        opacity: 0.8;
+        z-index: 6;
+        pointer-events: none;
       }
 
       #hud {
@@ -116,6 +76,7 @@
         border-color: rgba(255, 255, 255, 0.7);
       }
 
+      /* Tooltip — kept in DOM but not actively shown in proximity mode */
       #tooltip {
         position: fixed;
         background: rgba(0, 0, 0, 0.75);
@@ -146,21 +107,53 @@
         opacity: 0.75;
         font-style: italic;
       }
+
+      #back-hint {
+        position: fixed;
+        bottom: 16px;
+        left: 50%;
+        transform: translateX(-50%);
+        color: rgba(255, 255, 255, 0.6);
+        font-family: 'Georgia', serif;
+        font-size: 12px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        z-index: 5;
+        pointer-events: none;
+        display: none;
+      }
+
+      #coords {
+        position: fixed;
+        bottom: 16px;
+        right: 16px;
+        color: #fff;
+        font-family: monospace;
+        font-size: 14px;
+        background: rgba(0, 0, 0, 0.55);
+        padding: 6px 10px;
+        border-radius: 4px;
+        z-index: 6;
+        pointer-events: none;
+      }
     </style>
-    <script type="module" crossorigin src="/assets/index-Dylp7K4p.js"></script>
+    <script type="module" crossorigin src="/assets/index-CwW0YSSI.js"></script>
   </head>
   <body>
     <div id="canvas-container"></div>
-    <div id="fade-overlay"></div>
-    <div id="loading-indicator">
-      <div class="loading-spinner"></div>
-      <div id="loading-text">Loading world...</div>
-    </div>
+
+    <div id="start-overlay">Click to capture mouse</div>
+
     <div id="hud">Grand Museum</div>
     <button id="back-btn">Back to Museum</button>
+    <div id="back-hint">Press B to return to museum</div>
+
     <div id="tooltip">
       <div class="tooltip-title" id="tooltip-title"></div>
       <div class="tooltip-artist" id="tooltip-artist"></div>
     </div>
+
+    <div id="coords">x: 0.00  y: 0.00  z: 0.00</div>
+
   </body>
 </html>
