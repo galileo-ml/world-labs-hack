@@ -136,6 +136,31 @@
         z-index: 6;
         pointer-events: none;
       }
+
+      #joystick-zone {
+        position: fixed;
+        bottom: 40px;
+        left: 40px;
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.12);
+        border: 2px solid rgba(255, 255, 255, 0.28);
+        display: none;
+        touch-action: none;
+        z-index: 10;
+      }
+
+      #joystick-knob {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.38);
+      }
     </style>
   </head>
   <body>
@@ -153,6 +178,10 @@
     </div>
 
     <div id="coords">x: 0.00  y: 0.00  z: 0.00</div>
+
+    <div id="joystick-zone">
+      <div id="joystick-knob"></div>
+    </div>
 
     <script type="module" src="/src/main.js"></script>
   </body>
