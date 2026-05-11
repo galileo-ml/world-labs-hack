@@ -1,17 +1,22 @@
 // src/camera.js
 import * as THREE from 'three';
-import { FpsMovement } from '@sparkjsdev/spark';
 import { HUB_SPAWN } from './config.js';
+
+const MOVE_SPEED = 2; // m/s — constant, no shift/caps multipliers
 
 export function createCamera(domElement) {
   const camera = new THREE.PerspectiveCamera(75, innerWidth / innerHeight, 0.1, 1000);
   camera.position.set(...HUB_SPAWN.position);
 
-  // WASD movement via SparkJS
-  const fpsMovement = new FpsMovement({ moveSpeed: 2 });
-
   // Euler kept in sync for mouse look (YXZ = yaw then pitch, no roll)
   const euler = new THREE.Euler(0, 0, 0, 'YXZ');
+
+  // WASD / arrow key state — own keyboard handler so we can normalize
+  // diagonals and apply movement on the yaw-only horizontal plane.
+  const keys = new Set();
+  window.addEventListener('keydown', (e) => keys.add(e.code));
+  window.addEventListener('keyup',   (e) => keys.delete(e.code));
+  window.addEventListener('blur', () => keys.clear());
 
   const isMobile = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent) || ('ontouchstart' in window);
 
@@ -119,20 +124,36 @@ export function createCamera(domElement) {
     camera.updateProjectionMatrix();
   });
 
+  // Reusable scratch vector for movement.
+  const moveVec = new THREE.Vector3();
+
   let lastTime = performance.now();
   function update() {
     const now = performance.now();
     const dt = Math.min((now - lastTime) / 1000, 0.1); // cap at 100ms
     lastTime = now;
-    fpsMovement.update(dt, camera);
 
-    // Apply joystick movement on mobile
+    // Build raw input vector in camera-local axes (x=right, z=backward).
+    let inX = 0, inZ = 0;
+    if (keys.has('KeyW') || keys.has('ArrowUp'))    inZ -= 1;
+    if (keys.has('KeyS') || keys.has('ArrowDown'))  inZ += 1;
+    if (keys.has('KeyA') || keys.has('ArrowLeft'))  inX -= 1;
+    if (keys.has('KeyD') || keys.has('ArrowRight')) inX += 1;
     if (camera._joystickInput) {
-      const { x, y } = camera._joystickInput;
-      if (x || y) {
-        camera.translateX(x * 2 * dt);
-        camera.translateZ(y * 2 * dt);
-      }
+      inX += camera._joystickInput.x;
+      inZ += camera._joystickInput.y;
+    }
+
+    const len = Math.hypot(inX, inZ);
+    if (len > 0) {
+      // Clamp magnitude to 1 so diagonals don't go √2× and partial joystick
+      // input still scales correctly.
+      const scale = len > 1 ? 1 / len : 1;
+      moveVec.set(inX * scale, 0, inZ * scale);
+      // Apply full camera orientation — looking up + W flies up, etc. Speed
+      // magnitude is preserved because the input is unit-length.
+      moveVec.applyQuaternion(camera.quaternion);
+      camera.position.addScaledVector(moveVec, MOVE_SPEED * dt);
     }
   }
 
